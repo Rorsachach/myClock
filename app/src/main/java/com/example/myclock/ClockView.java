@@ -1,5 +1,7 @@
 package com.example.myclock;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -10,13 +12,17 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+import android.widget.Scroller;
 
 import androidx.annotation.Nullable;
 
 import java.util.Calendar;
 
 public class ClockView extends View {
+
+    private Scroller scroller;
 
     private Canvas canvas;
     private Context context;
@@ -27,6 +33,7 @@ public class ClockView extends View {
     private Calendar c;
     private Paint rectPaint;
     private boolean flag = false;
+    private boolean[] flags = {false, false, false, false, false};
 
     private Rect rect;
 
@@ -50,6 +57,8 @@ public class ClockView extends View {
     }
 
     private void initView(Context context) {
+
+        scroller = new Scroller(context);
 
         this.context = context;
 
@@ -110,8 +119,50 @@ public class ClockView extends View {
         }else{
             flag = false;
         }
+
+        if(minute % 15 == 1 && flags[0] == false) {
+            flags[0] = true;
+            smoothScrollTo(- width/7*2 + 20, 0, 5);
+            flags[4] = false;
+        }else if(minute % 15 == 2 && flags[1] == false){
+            flags[1] = true;
+            smoothScrollTo(- width/7*2 + 20, height/4 -20, 5);
+            flags[0] = false;
+        }else if(minute % 15== 3 && flags[2] == false){
+            flags[2] = true;
+            smoothScrollTo(width/7*2-20, height/4-20, 5);
+            flags[1] = false;
+        }else if(minute % 15 == 4 && flags[3] == false){
+            flags[3] = true;
+            smoothScrollTo(width/7*2-20, 0, 5);
+            flags[2] = false;
+        }else if(minute % 15 == 5 && flags[4] == false){
+            flags[4] = true;
+            smoothScrollTo(0, 0, 5);
+            flags[3] = false;
+        }
+
         invalidate();
     }
+
+    @Override
+    public void computeScroll() {
+        if(scroller.computeScrollOffset()){
+            scrollTo(scroller.getCurrX(), scroller.getCurrY());
+            postInvalidate();
+        }
+    }
+
+    private void smoothScrollTo(int destx, int destY, int duration){
+        int scrollX = getScrollX();
+        int deltaX = destx - scrollX;
+
+        int scrollY = getScrollY();
+        int deltaY = destY - scrollY;
+
+        scroller.startScroll(scrollX, scrollY, deltaX, deltaY, duration*1000);
+    }
+
 
     private void drawText() {
 
