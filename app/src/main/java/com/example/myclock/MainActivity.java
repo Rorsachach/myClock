@@ -11,18 +11,10 @@ import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * 最大的屏幕亮度
-     */
     float maxLight;
-    /**
-     * 当前的亮度
-     */
+
     float currentLight;
 
-    /**
-     * 用来控制屏幕亮度
-     */
     Handler handler;
 
     long DenyTime = 5 * 1000L;
