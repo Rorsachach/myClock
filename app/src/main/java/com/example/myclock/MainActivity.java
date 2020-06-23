@@ -67,9 +67,6 @@ public class MainActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
-    /**
-     * 开启休眠任务
-     */
     void startSleepTask() {
         SetLight(this, (int) maxLight);
         handler.removeCallbacks(sleepWindowTask);
